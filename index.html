@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leonid Radvinsky — The Legend</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;700;900&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root { --gold: #f5c842; --dark: #0a0a0a; --card-bg: #111111; --text: #f0ead6; --green: #2ecc71; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Montserrat', sans-serif; background: var(--dark); color: var(--text); overflow-x: hidden; }
+
+  /* HERO */
+  #hero { position: relative; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; text-align: center; }
+  #bg-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
+  #hero::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(10,10,10,0.45) 0%, rgba(10,10,10,0.85) 100%); z-index: 1; }
+  .hero-content { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; }
+  .hero-avatar { width: 170px; height: 170px; border-radius: 18px; border: 3px solid var(--gold); object-fit: cover; object-position: top center; box-shadow: 0 0 50px rgba(245,200,66,0.5), 0 0 100px rgba(245,200,66,0.15); margin-bottom: 24px; animation: float 4s ease-in-out infinite; }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+  .hero-dates { font-family:'Bebas Neue',sans-serif; font-size:1.1rem; letter-spacing:4px; color:var(--gold); margin-bottom:8px; }
+  .hero-name { font-family:'Bebas Neue',sans-serif; font-size:clamp(3.5rem,10vw,8rem); line-height:1; color:#fff; text-shadow:0 0 60px rgba(245,200,66,0.3); margin-bottom:8px; }
+  .hero-subtitle { font-size:0.9rem; color:#bbb; letter-spacing:2px; text-transform:uppercase; margin-bottom:32px; }
+  .ca-bar { display:flex; align-items:center; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); border-radius:50px; padding:10px 10px 10px 20px; gap:10px; font-size:0.78rem; font-family:monospace; color:#ccc; max-width:520px; width:90%; word-break:break-all; }
+  .ca-bar span { flex:1; }
+  .btn-copy { background:var(--green); color:#fff; border:none; border-radius:40px; padding:8px 20px; font-weight:700; font-size:0.8rem; cursor:pointer; white-space:nowrap; transition:opacity .2s; }
+  .btn-copy:hover { opacity:0.85; }
+
+  /* NAV */
+  nav { position:fixed; top:20px; left:50%; transform:translateX(-50%); z-index:100; display:flex; align-items:center; gap:8px; background:rgba(15,15,15,0.85); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,0.1); border-radius:50px; padding:8px 16px; }
+  .nav-logo { width:34px; height:34px; border-radius:50%; object-fit:cover; object-position:top center; border:2px solid var(--gold); }
+  nav a { color:#ddd; text-decoration:none; font-size:0.85rem; font-weight:600; padding:6px 14px; border-radius:30px; transition:background .2s,color .2s; }
+  nav a:hover { background:rgba(255,255,255,0.1); color:#fff; }
+  .btn-buy { background:var(--green)!important; color:#fff!important; font-weight:700; padding:8px 20px!important; }
+
+  /* SECTIONS */
+  section { padding:80px 24px; max-width:900px; margin:0 auto; }
+  .section-title { font-family:'Bebas Neue',sans-serif; font-size:2.4rem; letter-spacing:3px; margin-bottom:10px; display:flex; align-items:center; gap:12px; }
+  .section-sub { font-size:0.82rem; color:#666; letter-spacing:2px; text-transform:uppercase; margin-bottom:36px; }
+
+  /* PHOTO GRID */
+  .photo-grid { display:grid; grid-template-columns:1.4fr 1fr; gap:8px; }
+  .photo-cell { position:relative; overflow:hidden; border-radius:10px; background:#1a1a1a; }
+  .photo-cell.tall { grid-row:span 2; }
+  .photo-cell img { width:100%; height:100%; object-fit:cover; object-position:top center; display:block; transition:transform .4s ease; min-height:200px; }
+  .photo-cell:hover img { transform:scale(1.04); }
+  .photo-label { position:absolute; bottom:0; left:0; right:0; background:linear-gradient(transparent,rgba(0,0,0,0.82)); padding:22px 12px 12px; font-size:0.72rem; color:#ccc; letter-spacing:1px; text-transform:uppercase; }
+  .photo-label strong { display:block; font-size:0.9rem; color:#fff; margin-bottom:2px; }
+  .rip-overlay { position:absolute; inset:0; background:rgba(0,0,0,0.5); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; }
+  .rip-overlay h3 { font-family:'Bebas Neue',sans-serif; font-size:2rem; letter-spacing:3px; color:#fff; }
+  .rip-overlay p { font-size:1rem; color:var(--gold); letter-spacing:2px; }
+
+  /* INFO CARDS */
+  .info-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; margin-top:36px; }
+  .info-card { background:var(--card-bg); border:1px solid rgba(255,255,255,0.07); border-radius:14px; padding:22px 18px; }
+  .info-card .icon { font-size:1.6rem; margin-bottom:10px; }
+  .info-card h4 { font-size:0.85rem; color:var(--gold); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; }
+  .info-card p { font-size:0.82rem; color:#888; line-height:1.55; }
+
+  /* TRIBUTE */
+  .tribute-card { background:var(--card-bg); border-left:3px solid var(--gold); border-radius:0 12px 12px 0; padding:28px 24px; margin-bottom:18px; display:flex; gap:24px; align-items:flex-start; }
+  .tribute-card img { width:90px; height:90px; object-fit:cover; object-position:top center; border-radius:10px; flex-shrink:0; border:2px solid rgba(245,200,66,0.3); }
+  .tribute-card h4 { font-family:'DM Serif Display',serif; font-size:1.1rem; color:var(--gold); margin-bottom:8px; }
+  .tribute-card p { font-size:0.84rem; color:#999; line-height:1.65; }
+
+  /* COMMUNITY */
+  .community-desc { font-size:0.9rem; color:#888; line-height:1.7; text-align:center; max-width:620px; margin:0 auto 40px; }
+  .audience-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(175px,1fr)); gap:14px; }
+  .aud-card { background:var(--card-bg); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:18px; }
+  .aud-card .aud-icon { font-size:1.5rem; margin-bottom:8px; }
+  .aud-card h5 { font-size:0.82rem; font-weight:700; color:#fff; margin-bottom:6px; }
+  .aud-card p { font-size:0.75rem; color:#666; line-height:1.5; }
+
+  /* CHART */
+  .chart-embed { width:100%; height:480px; border-radius:16px; border:1px solid rgba(255,255,255,0.08); overflow:hidden; }
+
+  /* ABOUT */
+  .about-wrap { display:flex; gap:32px; align-items:flex-start; }
+  .about-wrap img { width:140px; height:140px; object-fit:cover; object-position:top center; border-radius:12px; flex-shrink:0; border:2px solid rgba(255,255,255,0.1); }
+  .about-wrap p { font-size:0.88rem; color:#888; line-height:1.75; }
+
+  footer { text-align:center; padding:40px 20px; border-top:1px solid rgba(255,255,255,0.06); font-size:0.75rem; color:#444; }
+
+  .rip-badge { display:inline-flex; align-items:center; gap:6px; background:rgba(245,200,66,0.12); border:1px solid rgba(245,200,66,0.3); color:var(--gold); border-radius:30px; padding:5px 14px; font-size:0.75rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:16px; }
+
+  @media(max-width:600px){
+    .photo-grid{grid-template-columns:1fr}
+    .photo-cell.tall{grid-row:span 1}
+    .tribute-card{flex-direction:column}
+    .about-wrap{flex-direction:column}
+    nav a:not(.btn-buy){display:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <img class="nav-logo"
+    src="https://resizer.ladbiblegroup.com/unsafe/rs:fit:400:400:0:0/g:sm/q:80/aHR0cHM6Ly9ldS1pbWFnZXMuY29udGVudHN0YWNrLmNvbS92My9hc3NldHMvYmx0OTQ5ZWE4ZTE2ZTQ2MzA0OS9ibHQ1N2U2NWZjNjhmMWY3OWJkLzY5YzE0YTIxMGRhOGVmMjljOTI0ODY3Ny9vbmx5ZmFucy1sZW8tcmFkdmluc2t5LnBuZw.webp"
+    alt="Leo">
+  <a href="https://x.com/Leo_Radvinsky1" target="_blank">Twitter</a>
+  <a href="https://x.com" target="_blank">Community</a>
+  <a href="https://dexscreener.com" target="_blank">Chart</a>
+  <a href="https://pump.fun" target="_blank" class="btn-buy">BUY</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <canvas id="bg-canvas"></canvas>
+  <div class="hero-content">
+    <div class="rip-badge">🕯️ Rest in Peace</div>
+    <img class="hero-avatar"
+      src="https://resizer.ladbiblegroup.com/unsafe/rs:fit:3840:0:0:0/g:sm/q:70/aHR0cHM6Ly9ldS1pbWFnZXMuY29udGVudHN0YWNrLmNvbS92My9hc3NldHMvYmx0OTQ5ZWE4ZTE2ZTQ2MzA0OS9ibHQ1N2U2NWZjNjhmMWY3OWJkLzY5YzE0YTIxMGRhOGVmMjljOTI0ODY3Ny9vbmx5ZmFucy1sZW8tcmFkdmluc2t5LnBuZw.webp"
+      alt="Leonid Radvinsky">
+    <div class="hero-dates">May 30, 1982 — March 20, 2026</div>
+    <h1 class="hero-name">Leonid Radvinsky</h1>
+    <p class="hero-subtitle">Ukrainian-American Billionaire · Founder of MyFreeCams · Owner of OnlyFans</p>
+    <div class="ca-bar">
+      <span>Dv5ta7T5abywumHi1MYfZjchta1Lp7C9dDSjbjdvpump</span>
+      <button class="btn-copy" onclick="copyCA()">COPY</button>
+    </div>
+  </div>
+</section>
+
+<!-- THE LEGEND -->
+<section id="legend">
+  <div class="section-title">📸 Leonid Radvinsky — The Legend</div>
+  <div class="section-sub">Ukrainian-American Billionaire · Tech Entrepreneur · 1982–2026</div>
+
+  <div class="photo-grid">
+    <div class="photo-cell tall">
+      <img src="https://resizer.ladbiblegroup.com/unsafe/rs:fit:3840:0:0:0/g:sm/q:70/aHR0cHM6Ly9ldS1pbWFnZXMuY29udGVudHN0YWNrLmNvbS92My9hc3NldHMvYmx0OTQ5ZWE4ZTE2ZTQ2MzA0OS9ibHRmMWMzYTA5YmVkZDYyNzE2LzY5YzEzYTJiNjM2MjdmNDlhZDA5MTU2ZS9TY3JlZW5zaG90XzIwMjYtMDMtMjNfYXRfMTMuMDEuMTAucG5n.webp" alt="Leonid Radvinsky">
+      <div class="photo-label"><strong>🇺🇦 The Billionaire</strong>Founder · OnlyFans Owner</div>
+    </div>
+    <div class="photo-cell" style="min-height:200px;">
+      <img src="https://resizer.ladbiblegroup.com/unsafe/rs:fit:3840:0:0:0/g:sm/q:70/aHR0cHM6Ly9ldS1pbWFnZXMuY29udGVudHN0YWNrLmNvbS92My9hc3NldHMvYmx0OTQ5ZWE4ZTE2ZTQ2MzA0OS9ibHQ1N2U2NWZjNjhmMWY3OWJkLzY5YzE0YTIxMGRhOGVmMjljOTI0ODY3Ny9vbmx5ZmFucy1sZW8tcmFkdmluc2t5LnBuZw.webp" alt="Leo RIP" style="opacity:0.4;">
+      <div class="rip-overlay">
+        <h3>LEONID RADVINSKY</h3>
+        <p>1982 — 2026</p>
+        <p style="font-size:0.7rem;color:#666;letter-spacing:2px;">R.I.P. THE LEGEND</p>
+      </div>
+    </div>
+    <div class="photo-cell" style="min-height:200px;">
+      <img src="https://www.cp24.com/resizer/v2/RAX25Z5CCVHSXGDQUAMM4IEL34.jpg?smart=true&auth=4fbb30aaccc7ae76064aa700ae7cedc75cbd1a588efbbc66068f7298df76acdf&width=1365&height=767" alt="Leonid Radvinsky">
+      <div class="photo-label"><strong>💰 $4.7 Billion</strong>Net Worth · Forbes #869 Richest</div>
+    </div>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-card"><div class="icon">💻</div><h4>Tech Pioneer</h4><p>Founded MyFreeCams in 2004 — one of the first adult livestreaming platforms in history.</p></div>
+    <div class="info-card"><div class="icon">📱</div><h4>OnlyFans Owner</h4><p>Acquired 75% of OnlyFans in 2018, growing it into a $6.6B+ revenue platform with 350M+ users.</p></div>
+    <div class="info-card"><div class="icon">🎓</div><h4>Northwestern Grad</h4><p>Economics degree (2002), graduated as class valedictorian. Built internet businesses as a teenager.</p></div>
+    <div class="info-card"><div class="icon">🇺🇦</div><h4>Ukrainian-American</h4><p>Born in Odesa, Ukraine. Family emigrated to Chicago. Donated $5M to Ukraine relief in 2022.</p></div>
+    <div class="info-card"><div class="icon">📈</div><h4>Angel Investor</h4><p>Founded VC fund "Leo" in 2009. Backed Israel-based B4X and Pleroma social networking software.</p></div>
+    <div class="info-card"><div class="icon">❤️</div><h4>Philanthropist</h4><p>Cancer research, Ukraine relief, animal welfare. Aspired to sign the Giving Pledge. A quiet giver.</p></div>
+  </div>
+</section>
+
+<!-- REMEMBERING -->
+<section id="tribute">
+  <div class="section-title">🕯️ Remembering Leo</div>
+  <div class="section-sub">March 20, 2026 — A Legend Gone Too Soon · Age 43</div>
+
+  <div class="tribute-card">
+    <img src="https://resizer.ladbiblegroup.com/unsafe/rs:fit:400:400:0:0/g:sm/q:80/aHR0cHM6Ly9ldS1pbWFnZXMuY29udGVudHN0YWNrLmNvbS92My9hc3NldHMvYmx0OTQ5ZWE4ZTE2ZTQ2MzA0OS9ibHQ1N2U2NWZjNjhmMWY3OWJkLzY5YzE0YTIxMGRhOGVmMjljOTI0ODY3Ny9vbmx5ZmFucy1sZW8tcmFkdmluc2t5LnBuZw.webp" alt="Leo">
+    <div>
+      <h4>The Boy From Odesa</h4>
+      <p>Born in Odesa, Ukraine in 1982, Leonid moved to Chicago as a child. By age 17 he had already incorporated his first company — Cybertania Inc. He graduated from Northwestern University in 2002 as class valedictorian with a degree in economics, then built one of the most impactful internet empires in history. A self-made man from day one.</p>
+    </div>
+  </div>
+
+  <div class="tribute-card">
+    <img src="https://resizer.ladbiblegroup.com/unsafe/rs:fit:400:400:0:0/g:sm/q:80/aHR0cHM6Ly9ldS1pbWFnZXMuY29udGVudHN0YWNrLmNvbS92My9hc3NldHMvYmx0OTQ5ZWE4ZTE2ZTQ2MzA0OS9ibHRmMWMzYTA5YmVkZDYyNzE2LzY5YzEzYTJiNjM2MjdmNDlhZDA5MTU2ZS9TY3JlZW5zaG90XzIwMjYtMDMtMjNfYXRfMTMuMDEuMTAucG5n.webp" alt="Leo">
+    <div>
+      <h4>💰 The Empire He Built</h4>
+      <p>In 2004 he founded MyFreeCams. In 2018 he acquired OnlyFans — under his ownership annual revenues exceeded $6.6 billion. He paid himself $1.8 billion total in dividends from 2021–2025. Forbes estimated he was generating roughly $1.9 million every single day. His net worth reached $7.8 billion by late 2025. Never once gave an interview.</p>
+    </div>
+  </div>
+
+  <div class="tribute-card">
+    <img src="https://www.cp24.com/resizer/v2/RAX25Z5CCVHSXGDQUAMM4IEL34.jpg?smart=true&auth=4fbb30aaccc7ae76064aa700ae7cedc75cbd1a588efbbc66068f7298df76acdf&width=400" alt="Leo">
+    <div>
+      <h4>❤️ Warrior, Patriarch, Icon</h4>
+      <p>A deeply private man who never gave a public interview, Radvinsky was known through his actions — $5M to Ukraine relief, a $23M cancer research grant program with his wife. OnlyFans said: "We are deeply saddened to announce the death of Leo Radvinsky. Leo passed away peacefully after a long battle with cancer. His family has requested privacy at this difficult time."</p>
+    </div>
+  </div>
+</section>
+
+<!-- COMMUNITY -->
+<section id="community">
+  <div class="section-title" style="justify-content:center;">❤️ Community Who Loves Leo</div>
+  <div class="section-sub" style="text-align:center;">Fans, builders, and believers keeping this legend alive on-chain.</div>
+  <p class="community-desc">$LEO is more than a token — it's a movement of people who watched Leo build empires from nothing, believing in the internet, and never giving up. The legend lives forever on Solana.</p>
+  <div class="audience-grid">
+    <div class="aud-card"><div class="aud-icon">💻</div><h5>Tech Fans</h5><p>Devs and founders inspired by his self-made path from teen programmer to billionaire.</p></div>
+    <div class="aud-card"><div class="aud-icon">🎬</div><h5>Creator Economy</h5><p>Millions of creators whose livelihoods grew through the platform he built.</p></div>
+    <div class="aud-card"><div class="aud-icon">🇺🇸</div><h5>Patriot Community</h5><p>Celebrates American immigrant success — coming with nothing, building everything.</p></div>
+    <div class="aud-card"><div class="aud-icon">🦁</div><h5>Meme Legends</h5><p>Internet culture hall of famer. The reclusive genius who changed the web forever.</p></div>
+    <div class="aud-card"><div class="aud-icon">👨‍👩‍👧</div><h5>Family First</h5><p>A devoted family man who kept privacy sacred while giving generously to the world.</p></div>
+    <div class="aud-card"><div class="aud-icon">🟣</div><h5>$LEO Holders</h5><p>Early believers in the Solana tribute token honoring the legend himself.</p></div>
+  </div>
+</section>
+
+<!-- CHART -->
+<section id="chart">
+  <div class="section-title" style="justify-content:center;">📊 Live Chart</div>
+  <div class="section-sub" style="text-align:center;">$LEO on Solana · Powered by DexScreener</div>
+  <iframe class="chart-embed"
+    src="https://dexscreener.com/solana/Dv5ta7T5abywumHi1MYfZjchta1Lp7C9dDSjbjdvpump?embed=1&theme=dark"
+    frameborder="0" allowfullscreen></iframe>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-title">🪙 About $LEO</div>
+  <div class="section-sub">The Solana Token Keeping His Memory Alive</div>
+  <div class="about-wrap">
+    <img src="https://resizer.ladbiblegroup.com/unsafe/rs:fit:400:400:0:0/g:sm/q:80/aHR0cHM6Ly9ldS1pbWFnZXMuY29udGVudHN0YWNrLmNvbS92My9hc3NldHMvYmx0OTQ5ZWE4ZTE2ZTQ2MzA0OS9ibHQ1N2U2NWZjNjhmMWY3OWJkLzY5YzE0YTIxMGRhOGVmMjljOTI0ODY3Ny9vbmx5ZmFucy1sZW8tcmFkdmluc2t5LnBuZw.webp" alt="Leonid Radvinsky">
+    <div>
+      <p>Leonid "Leo" Radvinsky — May 30, 1982 to March 20, 2026. Ukrainian-American billionaire, owner of OnlyFans, founder of MyFreeCams, VC investor, philanthropist. A reclusive genius who built a multi-billion dollar empire from a dorm room and never gave a single interview. Forbes #181 richest American. Net worth $4.7B at time of death.</p>
+      <br>
+      <p style="color:#666;">$LEO is the Solana memecoin built by fans to honor this legend. Built on-chain, kept forever. 🫡</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:3px;color:#333;margin-bottom:8px;">$LEO</div>
+  <p>© 2026 $LEO Community. All rights reserved.</p>
+  <p style="margin-top:6px;font-size:0.7rem;color:#333;">Not financial advice. Crypto is risky. This is a tribute memecoin.</p>
+  <p style="margin-top:4px;font-size:0.7rem;color:#2a2a2a;">CA: Dv5ta7T5abywumHi1MYfZjchta1Lp7C9dDSjbjdvpump</p>
+</footer>
+
+<script>
+// ── ANIMATED FACE BACKGROUND ──
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+
+const URLS = [
+  'https://resizer.ladbiblegroup.com/unsafe/rs:fit:600:600:0:0/g:sm/q:70/aHR0cHM6Ly9ldS1pbWFnZXMuY29udGVudHN0YWNrLmNvbS92My9hc3NldHMvYmx0OTQ5ZWE4ZTE2ZTQ2MzA0OS9ibHQ1N2U2NWZjNjhmMWY3OWJkLzY5YzE0YTIxMGRhOGVmMjljOTI0ODY3Ny9vbmx5ZmFucy1sZW8tcmFkdmluc2t5LnBuZw.webp',
+  'https://resizer.ladbiblegroup.com/unsafe/rs:fit:600:600:0:0/g:sm/q:70/aHR0cHM6Ly9ldS1pbWFnZXMuY29udGVudHN0YWNrLmNvbS92My9hc3NldHMvYmx0OTQ5ZWE4ZTE2ZTQ2MzA0OS9ibHRmMWMzYTA5YmVkZDYyNzE2LzY5YzEzYTJiNjM2MjdmNDlhZDA5MTU2ZS9TY3JlZW5zaG90XzIwMjYtMDMtMjNfYXRfMTMuMDEuMTAucG5n.webp',
+  'https://www.cp24.com/resizer/v2/RAX25Z5CCVHSXGDQUAMM4IEL34.jpg?smart=true&auth=4fbb30aaccc7ae76064aa700ae7cedc75cbd1a588efbbc66068f7298df76acdf&width=600&height=600'
+];
+
+function resizeCanvas(){ canvas.width=window.innerWidth; canvas.height=window.innerHeight; }
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+// Load images
+const imgs = URLS.map(url => {
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.src = url;
+  return img;
+});
+
+// Floating face particles
+const faces = Array.from({length:16}, (_,i) => ({
+  x: Math.random() * window.innerWidth,
+  y: Math.random() * window.innerHeight,
+  size: 90 + Math.random() * 140,
+  dx: (Math.random()-0.5)*0.55,
+  dy: (Math.random()-0.5)*0.55,
+  alpha: 0.07 + Math.random() * 0.13,
+  angle: Math.random() * Math.PI * 2,
+  dAngle: (Math.random()-0.5) * 0.006,
+  imgIdx: i % URLS.length
+}));
+
+// Gold accent orbs
+const orbs = Array.from({length:12}, ()=>({
+  x: Math.random()*window.innerWidth,
+  y: Math.random()*window.innerHeight,
+  r: 40+Math.random()*90,
+  dx: (Math.random()-0.5)*0.35,
+  dy: (Math.random()-0.5)*0.35,
+  alpha: 0.025+Math.random()*0.055
+}));
+
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='#0a0a0a';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  // Gold orbs
+  orbs.forEach(o=>{
+    o.x+=o.dx; o.y+=o.dy;
+    if(o.x<-o.r) o.x=canvas.width+o.r;
+    if(o.x>canvas.width+o.r) o.x=-o.r;
+    if(o.y<-o.r) o.y=canvas.height+o.r;
+    if(o.y>canvas.height+o.r) o.y=-o.r;
+    const g=ctx.createRadialGradient(o.x,o.y,0,o.x,o.y,o.r);
+    g.addColorStop(0,`rgba(245,200,66,${o.alpha})`);
+    g.addColorStop(1,'rgba(245,200,66,0)');
+    ctx.beginPath(); ctx.arc(o.x,o.y,o.r,0,Math.PI*2);
+    ctx.fillStyle=g; ctx.fill();
+  });
+
+  // Floating face photos
+  faces.forEach(p=>{
+    p.x+=p.dx; p.y+=p.dy; p.angle+=p.dAngle;
+    if(p.x<-p.size) p.x=canvas.width+p.size;
+    if(p.x>canvas.width+p.size) p.x=-p.size;
+    if(p.y<-p.size) p.y=canvas.height+p.size;
+    if(p.y>canvas.height+p.size) p.y=-p.size;
+
+    const img=imgs[p.imgIdx];
+    ctx.save();
+    ctx.globalAlpha=p.alpha;
+    ctx.translate(p.x,p.y);
+    ctx.rotate(p.angle);
+    ctx.beginPath();
+    ctx.arc(0,0,p.size/2,0,Math.PI*2);
+    ctx.clip();
+
+    if(img.complete && img.naturalWidth>0){
+      // Crop to top 60% (face region)
+      const srcH = img.naturalHeight * 0.65;
+      ctx.drawImage(img, 0,0, img.naturalWidth, srcH, -p.size/2,-p.size/2, p.size,p.size);
+    } else {
+      // Fallback gold glow
+      const g=ctx.createRadialGradient(0,0,0,0,0,p.size/2);
+      g.addColorStop(0,'rgba(245,200,66,0.25)');
+      g.addColorStop(1,'rgba(245,200,66,0)');
+      ctx.fillStyle=g; ctx.fill();
+    }
+    ctx.restore();
+  });
+
+  requestAnimationFrame(draw);
+}
+draw();
+
+// Copy CA
+function copyCA(){
+  navigator.clipboard.writeText('Dv5ta7T5abywumHi1MYfZjchta1Lp7C9dDSjbjdvpump').then(()=>{
+    const btn=document.querySelector('.btn-copy');
+    btn.textContent='COPIED!';
+    setTimeout(()=>btn.textContent='COPY',2000);
+  });
+}
+</script>
+</body>
+</html>
